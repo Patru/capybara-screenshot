@@ -49,11 +49,16 @@ module CommonSetup
     end
 
     def assert_screenshot_pruned
-      check_file_presence Array(screenshot_for_pruning_path), false
+      if defined? :be_an_existing_file
+        expect(screenshot_for_pruning_path).not_to be_an_existing_file
+      else
+        puts "Here I just be"
+        expect(screenshot_for_pruning_path).not_to be_existing_file
+      end
     end
 
     def assert_screenshot_not_pruned
-      check_file_presence Array(screenshot_for_pruning_path), true
+      expect(screenshot_for_pruning_path).to be_an_existing_file
     end
   end
 end

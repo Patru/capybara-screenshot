@@ -5,7 +5,11 @@ describe Capybara::Screenshot::RSpec do
     include CommonSetup
 
     before do
-      clean_current_dir
+      if respond_to? :setup_aruba
+        setup_aruba
+      else
+        clean_current_dir
+      end
     end
 
     def run_failing_case(code, error_message, format=nil)
@@ -52,7 +56,7 @@ describe Capybara::Screenshot::RSpec do
           end
         end
       RUBY
-      check_file_content('tmp/screenshot.html', 'This is the root page', true)
+      expect('tmp/screenshot.html').to have_file_content('This is the root page')
     end
 
     formatters = {
@@ -76,7 +80,7 @@ describe Capybara::Screenshot::RSpec do
             end
           end
         RUBY
-        check_file_content('tmp/screenshot.html', 'This is the root page', true)
+        expect('tmp/screenshot.html').to have_file_content('This is the root page')
       end
     end
 
@@ -88,7 +92,7 @@ describe Capybara::Screenshot::RSpec do
           end
         end
       RUBY
-      check_file_presence(%w{tmp/screenshot.html}, false)
+      expect('tmp/screenshot.html').not_to be_an_existing_file
     end
 
     it 'saves a screenshot for the correct session for failures using_session' do
@@ -105,7 +109,7 @@ describe Capybara::Screenshot::RSpec do
           end
         end
       RUBY
-      check_file_content('tmp/screenshot.html', 'This is a different page', true)
+      expect('tmp/screenshot.html').to have_file_content('This is a different page')
     end
 
     context 'pruning' do

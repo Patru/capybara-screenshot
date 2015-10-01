@@ -4,10 +4,12 @@ end
 
 appraise "rspec.2.99" do
   gem "rspec", "2.99"
+gem "aruba", "~> 0.7.4"
 end
 
 appraise "rspec.3.0" do
   gem "rspec", "3.0"
+gem "aruba", "~> 0.8.0"
 end
 
 appraise "cucumber.1.2" do

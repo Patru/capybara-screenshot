@@ -4,7 +4,12 @@ describe "Using Capybara::Screenshot with Cucumber" do
   include CommonSetup
 
   before do
-    clean_current_dir
+    if respond_to? :setup_aruba
+        setup_aruba
+    else
+      #puts "cleaning current directory as #setup_aruba is (still) missing"
+      clean_current_directory
+    end
   end
 
   let(:cmd) { 'bundle exec cucumber' }
@@ -42,7 +47,11 @@ describe "Using Capybara::Screenshot with Cucumber" do
           Given I visit "/"
           And I click on a missing link
     CUCUMBER
-    check_file_content 'tmp/my_screenshot.html', 'This is the root page', true
+    if defined? :have_file_content
+      expect('tmp/my_screenshot.html').to have_file_content('This is the root page')
+    else
+      check_file_content 'tmp/my_screenshot.html', 'This is the root page', true
+    end
   end
 
   it 'saves a screenshot on an error' do
@@ -52,7 +61,7 @@ describe "Using Capybara::Screenshot with Cucumber" do
           Given I visit "/"
           And I trigger an unhandled exception
     CUCUMBER
-    check_file_content 'tmp/my_screenshot.html', 'This is the root page', true
+    expect('tmp/my_screenshot.html').to have_file_content('This is the root page')
   end
 
   it 'saves a screenshot for the correct session for failures using_session' do
@@ -62,7 +71,7 @@ describe "Using Capybara::Screenshot with Cucumber" do
           Given I visit "/"
           And I click on a missing link on a different page in a different session
     CUCUMBER
-    check_file_content 'tmp/my_screenshot.html', 'This is a different page', true
+    expect('tmp/my_screenshot.html').to have_file_content('This is a different page')
   end
 
   context 'pruning' do

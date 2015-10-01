@@ -4,7 +4,11 @@ describe "Using Capybara::Screenshot with MiniTest" do
   include CommonSetup
 
   before do
-    clean_current_dir
+    if respond_to? :setup_aruba
+      setup_aruba
+    else
+      clean_current_dir
+    end
   end
 
   def run_failing_case(code)
@@ -46,7 +50,7 @@ describe "Using Capybara::Screenshot with MiniTest" do
         end
       end
     RUBY
-    check_file_content 'tmp/my_screenshot.html', 'This is the root page', true
+    expect('tmp/my_screenshot.html').to have_file_content('This is the root page')
   end
 
   it "does not save a screenshot for tests that don't inherit from ActionDispatch::IntegrationTest" do
@@ -61,7 +65,7 @@ describe "Using Capybara::Screenshot with MiniTest" do
         end
       end
     RUBY
-    check_file_presence(%w{tmp/my_screenshot.html}, false)
+    expect('tmp/my_screenshot.html').not_to be_an_existing_file
   end
 
   it 'saves a screenshot for the correct session for failures using_session' do
@@ -84,7 +88,8 @@ describe "Using Capybara::Screenshot with MiniTest" do
         end
       end
     RUBY
-    check_file_content 'tmp/my_screenshot.html', 'This is a different page', true
+    expect('tmp/my_screenshot.html').to have_file_content('This is a different page')
+    #    check_file_content 'tmp/my_screenshot.html', 'This is a different page', true
   end
 
   it 'prunes screenshots on failure' do

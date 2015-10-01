@@ -5,5 +5,6 @@ source "http://rubygems.org"
 gem "rake"
 gem "appraisal"
 gem "rspec", "2.99"
+gem "aruba", "~> 0.7.4"
 
 gemspec :path => "../"
